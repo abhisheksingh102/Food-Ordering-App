@@ -1,0 +1,9 @@
+node_modules/
+.env
+dist/
+.parcel-cache/
+
+# Ignore logs
+logs/
+*.log
+npm-debug.log*
