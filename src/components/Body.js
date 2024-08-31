@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { RESTAURANT_LIST_API } from "../utils/constants";
 import RestaurantCard from "./RestaurantCard";
+import Shimmer from "./Shimmer";
 
 const Body = () => {
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
@@ -39,7 +40,9 @@ const Body = () => {
     setIsResFiltered(!isResFiltered);
   };
 
-  return (
+  return !listOfRestaurants.length ? (
+    <Shimmer />
+  ) : (
     <div className="body">
       <div className="filter">
         <button
