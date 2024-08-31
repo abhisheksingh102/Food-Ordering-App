@@ -1,33 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { RESTAURANT_LIST_API } from "../utils/constants";
 import RestaurantCard from "./RestaurantCard";
 
 const Body = () => {
-  const resList = [
-    {
-      data: {
-        name: "Meghana Foods",
-        cuisine: "Biryani, Sweets, North Indian",
-        rating: "4.4 stars",
-        time: "38 minutes",
-      },
-    },
-    {
-      data: {
-        name: "KFC",
-        cuisine: "Burger, Fast Foods",
-        rating: "3.9 stars",
-        time: "27 minutes",
-      },
-    },
-  ];
+  const [listOfRestaurants, setListOfRestaurants] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [filteredRestaurant, setFilteredRestaurant] = useState([]);
+  const [isResFiltered, setIsResFiltered] = useState(false);
 
-  const [topRestaurants, setTopRestaurants] = useState(resList);
+  // Fetch data from the Swiggy API when the component mounts
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const data = await fetch(RESTAURANT_LIST_API);
+
+    const json = await data.json();
+    setListOfRestaurants(
+      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+    );
+    setFilteredRestaurant(
+      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+    );
+  };
 
   const handleTopRatedRestaurants = () => {
-    const filteredList = topRestaurants.filter(
-      (res) => parseFloat(res.data.rating) > 4
-    );
-    setTopRestaurants(filteredList);
+    if (isResFiltered) {
+      // Show all restaurants
+      setFilteredRestaurant(listOfRestaurants);
+    } else {
+      // Show only top-rated restaurants
+      const filteredList = listOfRestaurants.filter(
+        (res) => parseFloat(res?.info.avgRating) > 4
+      );
+      setFilteredRestaurant(filteredList);
+    }
+    setIsResFiltered(!isResFiltered);
   };
 
   return (
@@ -37,12 +46,12 @@ const Body = () => {
           className="filter-btn"
           onClick={() => handleTopRatedRestaurants()}
         >
-          Top Rated Restaurants
+          {isResFiltered ? "Show All Restaurants" : "Top Rated Restaurants"}
         </button>
       </div>
       <div className="res-container">
-        {topRestaurants.map((restaurant) => (
-          <RestaurantCard resData={restaurant} />
+        {filteredRestaurant.map((restaurant, index) => (
+          <RestaurantCard key={index} resData={restaurant} />
         ))}
       </div>
     </div>
