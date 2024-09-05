@@ -8,6 +8,9 @@ const Body = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredRestaurant, setFilteredRestaurant] = useState([]);
   const [isResFiltered, setIsResFiltered] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+
+  // whenever state variable update, react triggers a reconciliation cycle(re-renders the component)
 
   // Fetch data from the Swiggy API when the component mounts
   useEffect(() => {
@@ -40,11 +43,37 @@ const Body = () => {
     setIsResFiltered(!isResFiltered);
   };
 
+  const handleSearch = () => {
+    const searchedRestaurants = listOfRestaurants.filter((res) =>
+      res?.info?.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    setFilteredRestaurant(searchedRestaurants);
+  };
+
   return !listOfRestaurants.length ? (
     <Shimmer />
   ) : (
     <div className="body">
       <div className="filter">
+        <div className="search">
+          <input
+            type="text"
+            className="search-box"
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
+            }}
+          />
+          <button
+            onClick={() => {
+              // Filter the restaurant cards and update the ui
+              // searchText
+              handleSearch();
+            }}
+          >
+            Search
+          </button>
+        </div>
         <button
           className="filter-btn"
           onClick={() => handleTopRatedRestaurants()}
