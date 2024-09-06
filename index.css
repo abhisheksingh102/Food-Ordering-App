@@ -97,3 +97,8 @@
     background-color: #003d80; /* Even darker blue on active click */
     transform: scale(0.98); /* Slightly reduce size on click */
 }
+
+.user-card {
+    padding: 10px;
+    border: 1px solid black;
+}
