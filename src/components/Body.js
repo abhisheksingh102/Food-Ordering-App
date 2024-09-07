@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { RESTAURANT_LIST_API } from "../utils/constants";
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
+import useRestaurantList from "../utils/useRestaurantList";
 
 const Body = () => {
-  const [listOfRestaurants, setListOfRestaurants] = useState([]);
-  const [searchText, setSearchText] = useState("");
   const [filteredRestaurant, setFilteredRestaurant] = useState([]);
   const [isResFiltered, setIsResFiltered] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -14,21 +13,7 @@ const Body = () => {
   // whenever state variable update, react triggers a reconciliation cycle(re-renders the component)
 
   // Fetch data from the Swiggy API when the component mounts
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    const data = await fetch(RESTAURANT_LIST_API);
-
-    const json = await data.json();
-    setListOfRestaurants(
-      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-    setFilteredRestaurant(
-      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-  };
+  const listOfRestaurants = useRestaurantList();
 
   const handleTopRatedRestaurants = () => {
     if (isResFiltered) {
