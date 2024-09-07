@@ -11,6 +11,7 @@ const Body = () => {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
 
   // whenever state variable update, react triggers a reconciliation cycle(re-renders the component)
+
   const listOfRestaurants = useRestaurantList();
 
   useEffect(() => {
