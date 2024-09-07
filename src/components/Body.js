@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RESTAURANT_LIST_API } from "../utils/constants";
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./Shimmer";
@@ -6,35 +6,38 @@ import { Link } from "react-router-dom";
 import useRestaurantList from "../utils/useRestaurantList";
 
 const Body = () => {
-  const [filteredRestaurant, setFilteredRestaurant] = useState([]);
-  const [isResFiltered, setIsResFiltered] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [isResFiltered, setIsResFiltered] = useState(false);
+  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
 
   // whenever state variable update, react triggers a reconciliation cycle(re-renders the component)
-
-  // Fetch data from the Swiggy API when the component mounts
   const listOfRestaurants = useRestaurantList();
+
+  useEffect(() => {
+    setFilteredRestaurants(listOfRestaurants);
+  }, [listOfRestaurants]);
+
+  const handleSearch = () => {
+    const filtered = listOfRestaurants.filter((restaurant) =>
+      restaurant.info.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    setFilteredRestaurants(filtered);
+  };
 
   const handleTopRatedRestaurants = () => {
     if (isResFiltered) {
-      // Show all restaurants
-      setFilteredRestaurant(listOfRestaurants);
+      setFilteredRestaurants(listOfRestaurants);
     } else {
-      // Show only top-rated restaurants
-      const filteredList = listOfRestaurants.filter(
-        (res) => parseFloat(res?.info.avgRating) > 4
+      const filtered = listOfRestaurants.filter(
+        (restaurant) => restaurant.info.avgRating > 4
       );
-      setFilteredRestaurant(filteredList);
+      setFilteredRestaurants(filtered);
     }
     setIsResFiltered(!isResFiltered);
   };
 
-  const handleSearch = () => {
-    const searchedRestaurants = listOfRestaurants.filter((res) =>
-      res?.info?.name.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setFilteredRestaurant(searchedRestaurants);
-  };
+  const restaurantsToDisplay =
+    searchInput || isResFiltered ? filteredRestaurants : listOfRestaurants;
 
   return !listOfRestaurants.length ? (
     <Shimmer />
@@ -48,32 +51,22 @@ const Body = () => {
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
-            }}
-          />
-          <button
-            onClick={() => {
-              // Filter the restaurant cards and update the ui
-              // searchText
               handleSearch();
             }}
-          >
-            Search
-          </button>
+          />
+          <button onClick={handleSearch}>Search</button>
         </div>
-        <button
-          className="filter-btn"
-          onClick={() => handleTopRatedRestaurants()}
-        >
+        <button className="filter-btn" onClick={handleTopRatedRestaurants}>
           {isResFiltered ? "Show All Restaurants" : "Top Rated Restaurants"}
         </button>
       </div>
       <div className="res-container">
-        {filteredRestaurant.map((restaurants) => (
+        {restaurantsToDisplay.map((restaurant) => (
           <Link
-            key={restaurants?.info?.id}
-            to={`/restaurants/${restaurants?.info?.id}`}
+            key={restaurant?.info?.id}
+            to={`/restaurants/${restaurant?.info?.id}`}
           >
-            <RestaurantCard resData={restaurants} />
+            <RestaurantCard resData={restaurant} />
           </Link>
         ))}
       </div>
