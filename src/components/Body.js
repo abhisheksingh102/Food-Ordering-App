@@ -4,6 +4,7 @@ import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useRestaurantList from "../utils/useRestaurantList";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -39,6 +40,15 @@ const Body = () => {
 
   const restaurantsToDisplay =
     searchInput || isResFiltered ? filteredRestaurants : listOfRestaurants;
+
+  const onlineStatus = useOnlineStatus();
+
+  if (onlineStatus === false)
+    return (
+      <h1>
+        Looks like you're offline!! Please check your internet connection.
+      </h1>
+    );
 
   return !listOfRestaurants.length ? (
     <Shimmer />
