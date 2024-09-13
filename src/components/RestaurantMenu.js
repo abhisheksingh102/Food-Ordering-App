@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { MENU_API } from "../utils/constants";
 import Shimmer from "./Shimmer";
 import useRestaurantMenu from "../utils/useRestaurantMenu";
 
@@ -9,9 +8,12 @@ const RestaurantMenu = () => {
 
   const { name, cuisines, costForTwoMessage } =
     resInfo?.cards[2]?.card?.card?.info || {};
-  const { itemCards } =
+
+  const categories =
     resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[2]?.card
-      ?.card || {};
+      ?.categories || [];
+
+  console.log("categories", categories);
 
   return resInfo === null ? (
     <Shimmer />
@@ -23,11 +25,18 @@ const RestaurantMenu = () => {
       </p>
       <h2>Menu</h2>
       <ul>
-        {itemCards.map((item) => (
-          <li key={item.card.info.id}>
-            {item.card.info.name} - Rs.
-            {item.card.info.price / 100 || item.card.info.defaultPrice}
-          </li>
+        {categories.map((category, index) => (
+          <div key={index}>
+            <h3>{category.title}</h3>
+            <ul>
+              {category?.itemCards?.map((item) => (
+                <li key={item.card.info.id}>
+                  {item.card.info.name} - Rs.
+                  {item.card.info.price / 100}
+                </li>
+              )) || <p>No items available.</p>}
+            </ul>
+          </div>
         ))}
       </ul>
     </div>
