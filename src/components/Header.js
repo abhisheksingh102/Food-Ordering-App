@@ -8,32 +8,51 @@ const Header = () => {
   const onlineStatus = useOnlineStatus();
 
   return (
-    <div className="flex justify-between bg-pink-100 shadow-lg items-center">
-      <div className="logo-container">
-        <img className="w-40" src={LOGO_URL} />
-      </div>
-      <div className="px-4">
-        <ul className="flex px-4 m-4">
-          <li className="px-4">Online Status: {onlineStatus ? "🟢" : "🔴"}</li>
-          <li className="px-4">
-            <Link to="/">Home</Link>
-          </li>
-          <li className="px-4">
-            <Link to="/about">About Us</Link>
-          </li>
-          <li className="px-4">
-            <Link to="/contact">Contact Us</Link>
-          </li>
-          <li className="px-4">
-            <Link to="/grocery">Grocery</Link>
-          </li>
-          <li className="px-4">Cart</li>
-          <button className="login-btn" onClick={() => setBtnName(!btnName)}>
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="container mx-auto flex justify-between items-center py-4 px-6">
+        {/* Logo Section */}
+        <div className="flex items-center">
+          <img className="w-36 h-auto" src={LOGO_URL} alt="Logo" />
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="flex items-center space-x-8">
+          <span className="text-sm text-gray-600">
+            Online Status: {onlineStatus ? "🟢" : "🔴"}
+          </span>
+          <Link
+            to="/"
+            className="hover:text-pink-500 text-gray-800 font-semibold"
+          >
+            Home
+          </Link>
+          <Link
+            to="/about"
+            className="hover:text-pink-500 text-gray-800 font-semibold"
+          >
+            About Us
+          </Link>
+          <Link
+            to="/contact"
+            className="hover:text-pink-500 text-gray-800 font-semibold"
+          >
+            Contact Us
+          </Link>
+          <Link
+            to="/grocery"
+            className="hover:text-pink-500 text-gray-800 font-semibold"
+          >
+            Grocery
+          </Link>
+          <button
+            className="bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded"
+            onClick={() => setBtnName(!btnName)}
+          >
             {btnName ? "Login" : "Logout"}
           </button>
-        </ul>
+        </nav>
       </div>
-    </div>
+    </header>
   );
 };
 
